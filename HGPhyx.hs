@@ -5,8 +5,12 @@ import Graphics.Gloss.Interface.Pure.Game
 import Global
 import World
 import Particle
+import Collide as C
 
-field = [Particle {x = (10, 10), colorP = makeColor 0.0 0.4 0.8 1.0}]
+field = [Particle {x = (10, 10), v = (0, 0), f = (0, 0),
+                   colorP = makeColor 0.0 0.4 0.8 1.0},
+         Particle {x = (10, 40), v = (0, 0), f = (0, 0),
+                   colorP = makeColor 0.8 0.4 0.0 1.0}]
 
 main :: IO ()
 main
@@ -27,5 +31,5 @@ handleInput (EventKey k ks _ _) s = s
 handleInput (EventMotion _) s = s
 
 move :: Float -> World -> World
-move _ w = w {object = map (moveP (0,(0-1))) (object w)}
+move _ w = w {object = map C.process (object w)}
 
