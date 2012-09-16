@@ -16,11 +16,11 @@ data Particle = Particle {
 
 drawP :: Particle -> Picture
 drawP (Particle {x = x, colorP = colorP})
-    = Color colorP $ Translate (fst x) (snd x) $ ThickCircle 3 6
+    = Color colorP $ uncurry Translate x $ ThickCircle 3 6
 
 
 moveP :: Particle -> Particle
-moveP p = p {x = limitXY $ (v p) + (x p), v = (f p) + (v p)}
+moveP p = p {x = limitXY $ v p + x p, v = f p + v p}
 
 gravityP :: Particle -> Particle
 gravityP p = p {f = (0, negate 0.1)}
