@@ -1,36 +1,22 @@
 module Collide where
 
+import Graphics.Gloss.Data.Picture
+
+import qualified Data.Map as Map
 import Particle as P
 
-type SpSet = ((Int, Int), Int)
-type SpPart = [SpSet]
+type SpFlag = ((Int, Int), Bool)
+type SpFlags = [SpFlag]
 
-manage :: Particles -> SpPart
-manage = foldl regist []
+vec2tuple :: Vector -> (Int, Int)
+vec2tuple (x, y) = (floor x, floor y)
 
-regist :: SpPart -> Particle -> SpPart
-regist s Particle {x = x}
-    | (cx, cy) `elem` [pos|(pos, cnt)<-s] = inc s (cx, cy)
-    | otherwise = add s (cx, cy)
+getDouble :: Particles -> Map.Map (Int, Int) Particle
+getDouble s = foldl (flip $ addmap) Map.empty s
     where
-        cx = floor $ fst x / 50
-        cy = floor $ snd x / 50
-        
-inc :: SpPart -> (Int, Int) -> SpPart
-inc s index = map (isEqual index) s
-    where
-        isEqual index (pos, cnt)
-            | index == pos = (pos, cnt+1)
-            | otherwise    = (pos, cnt)
-
-add :: SpPart -> (Int, Int) -> SpPart
-add s (cx, cy) = small ++ [((cx, cy), 0)] ++ large
-    where
-        small = [((sx, sy), cnt) |((sx, sy), cnt)<-s, sx * 100 + sy < cx * 100 + cy]
-        large = [((sx, sy), cnt) |((sx, sy), cnt)<-s, sx * 100 + sy > cx * 100 + cy]
-
-
-
+        addmap :: Particle -> Map.Map (Int, Int) Particle -> Map.Map (Int, Int) Particle
+        addmap p = Map.insert (vec2tuple (x p)) p
+    
 process :: Particles -> Particles
 process = map $ P.moveP . P.gravityP
 
