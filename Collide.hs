@@ -5,18 +5,29 @@ import Graphics.Gloss.Data.Picture
 import qualified Data.Map as Map
 import Particle as P
 
-type SpFlag = ((Int, Int), Bool)
-type SpFlags = [SpFlag]
+type SpPart = Map.Map (Int, Int) Int
 
-vec2tuple :: Vector -> (Int, Int)
-vec2tuple (x, y) = (floor x, floor y)
+toGrid :: Vector -> (Int, Int)
+toGrid x = (floor $ (fst x)/50, floor $ (snd x)/50)
 
-getDouble :: Particles -> Map.Map (Int, Int) Particle
-getDouble s = foldl (flip $ addmap) Map.empty s
+makePart :: Particles -> SpPart
+makePart p = Map.fromList (map apply (Map.toList p))
     where
-        addmap :: Particle -> Map.Map (Int, Int) Particle -> Map.Map (Int, Int) Particle
-        addmap p = Map.insert (vec2tuple (x p)) p
-    
-process :: Particles -> Particles
-process = map $ P.moveP . P.gravityP
+        apply :: (Int, Particle) -> ((Int, Int), Int)
+        apply (n, p) = (toGrid (x p), n)
+        
+updatePart :: Int -> Particle -> SpPart -> SpPart
+updatePart n p s = s
+        
+getCollision :: SpPart -> Int -> Particles -> SpPart
+getCollision s n q
+    | r == Nothing = Map.insert position n s
+    where
+        r = Map.lookup (position) s
+        position = toGrid (x ((Map.!) q n))
+        
+collide :: Int -> Int -> Particles -> Particles
+collide m n s = s
 
+process :: Particles -> Particles
+process = Map.map $ P.moveP . P.gravityP
