@@ -2,7 +2,7 @@ module Particle where
 
 import Graphics.Gloss.Interface.Pure.Game
 import Graphics.Gloss.Data.Vector
-import qualified Data.Map as Map
+import qualified Data.Vector as Vector
 
 import Global
 
@@ -13,7 +13,7 @@ data Particle = Particle {
     colorP :: Color
 }
 
-type Particles = Map.Map Int Particle
+type Particles = Vector.Vector Particle
 
 
 drawP :: Particle -> Picture
