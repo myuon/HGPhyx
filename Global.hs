@@ -6,7 +6,7 @@ import qualified Control.Arrow as Arrow
 winX = 400 :: Int
 winY = 300 :: Int
 
-densXY = 50 :: Int
+densXY = 10 :: Int
 
 mapPair :: (a -> b) -> (a, a) -> (b, b)
 mapPair f = f Arrow.*** f
