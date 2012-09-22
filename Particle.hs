@@ -1,13 +1,15 @@
 module Particle where
 
 import Graphics.Gloss.Interface.Pure.Game
-import Graphics.Gloss.Data.Vector
+import Graphics.Gloss.Data.Picture
 import qualified Data.Vector as Vector
 
 import Global
 
+type Position = (Int, Int)
+
 data Particle = Particle {
-    x :: Vector,
+    x :: Position,
     v :: Vector,
     f :: Vector,
     colorP :: Color
@@ -15,23 +17,27 @@ data Particle = Particle {
 
 type Particles = Vector.Vector Particle
 
-
 drawP :: Particle -> Picture
 drawP (Particle {x = x, colorP = colorP})
-    = Color colorP $ uncurry Translate x $ ThickCircle 3 6
+    = Color colorP
+    $ uncurry Translate (mapPair fromIntegral x)
+    $ ThickCircle 3 6
 
 
 moveP :: Particle -> Particle
-moveP p = p {x = limitXY $ v p + x p, v = f p + v p}
+moveP p = p {x = mapPair floor
+               $ limitXY
+               $ v p `plusV` mapPair fromIntegral (x p)
+           , v = f p `plusV` v p}
 
 gravityP :: Particle -> Particle
 gravityP p = p {f = (0, negate 0.1)}
 
 
-limitXY :: Vector -> Vector
+limitXY :: Point -> Point
 limitXY = limitX . limitY
     where
-        limitX :: Vector -> Vector
+        limitX :: Point -> Point
         limitX v
             | fst v > fromIntegral winX
                 = (fromIntegral winX, snd v)
@@ -39,7 +45,7 @@ limitXY = limitX . limitY
                 = (fromIntegral $ negate winX, snd v)
             | otherwise
                 = v
-        limitY :: Vector -> Vector
+        limitY :: Point -> Point
         limitY v
             | snd v > fromIntegral winY
                 = (fst v, fromIntegral winY)
