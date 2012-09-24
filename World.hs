@@ -22,13 +22,15 @@ initWorld p = World {
                    $ Pictures gridCenter,
                      Color (makeColor 0.0 0.8 0.5 1.0)
                    $ Pictures
-                   $ gridXY 80 5 8
+                   $ gridXY (fromIntegral densXY) (floor ((fromIntegral winY)/(fromIntegral densXY))) (floor ((fromIntegral winX)/(fromIntegral densXY)))
                    ]
     }
     where
       gridCenter = [
        Line [(fromIntegral $ negate winX, 0), (fromIntegral winX, 0)],
        Line [(0, fromIntegral $ negate winY), (0, fromIntegral winX)]]
+      
+      gridXY :: Float -> Int -> Int -> [Picture]
       gridXY space x y = xyLines x y
           where
             xyLines x y = xLines x 1
@@ -37,12 +39,12 @@ initWorld p = World {
                        ++ yLines y (negate 1)
 
             xLines 0 x = []
-            xLines n x = Line [(fromIntegral (negate winX), n*space*x), 
-                               (fromIntegral winX, n*space*x)]
+            xLines n x = Line [(fromIntegral (negate winX), (fromIntegral n)*space*(fromIntegral x)), 
+                               (fromIntegral winX, (fromIntegral n)*space*(fromIntegral x))]
                               : xLines (n-1) x
             yLines 0 y = []
-            yLines n y = Line [(n*space*y, fromIntegral (negate winY)), 
-                               (n*space*y, fromIntegral winX)]
+            yLines n y = Line [((fromIntegral n)*space*(fromIntegral y), fromIntegral (negate winY)), 
+                               ((fromIntegral n)*space*(fromIntegral y), fromIntegral winX)]
                               : yLines (n-1) y
 
 

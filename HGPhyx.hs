@@ -9,16 +9,18 @@ import World
 import Particle
 import qualified PMap
 
+import Debug.Trace
+
 field :: Vector.Vector Particle
 field = Vector.fromList
-        [Particle {x = (10, 10), v = (0, 0), f = (0, 0),
+        [Particle {x = (40, 10), v = (0, 0), f = (0, 0),
                    colorP = makeColor 0.0 0.4 0.8 1.0},
          Particle {x = (10, 200), v = (0, 0), f = (0, 0),
                    colorP = makeColor 0.8 0.4 0.0 1.0}]
 
 main :: IO ()
 main
-  = play (InWindow "HGPhyx" (winX*2, winY*2) (10, 10))
+  = play (InWindow "HGPhyx" (winX*2, winY*2) (40, 140))
     black
     60
     (initWorld field)
@@ -28,7 +30,7 @@ main
 
 draw :: World -> Picture
 draw (World {object = obj, grid = grid})
-    = Pictures [Pictures $ map drawP (Vector.toList obj), grid]
+    = Pictures [grid, Pictures $ map drawP (Vector.toList obj)]
 
 handleInput :: Event -> World -> World
 handleInput (EventKey k ks _ _) s = s
@@ -38,13 +40,10 @@ move :: Float -> World -> World
 move _ w = w {object = process (object w)}
     where
         process :: Particles -> Particles
-        process ps = Vector.map (processOne (getMap ps)) ps
+        process ps = Vector.map (processOne ps) ps
         
-        processOne :: PMap.PMap -> Particle -> Particle
-        processOne pmap p = PMap.update pmap p . moveP . gravityP $ p
-
-        getMap :: Particles -> PMap.PMap
-        getMap = Vector.foldl (flip PMap.insert) Map.empty
+        processOne :: Particles -> Particle -> Particle
+        processOne ps p = PMap.update ps p . moveP . gravityP $ p
 
 
 

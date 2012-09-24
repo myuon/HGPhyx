@@ -6,7 +6,6 @@ import qualified Data.Vector as Vector
 
 import Global
 
-type Position = (Int, Int)
 
 data Particle = Particle {
     x :: Position,
@@ -21,7 +20,7 @@ drawP :: Particle -> Picture
 drawP (Particle {x = x, colorP = colorP})
     = Color colorP
     $ uncurry Translate (mapPair fromIntegral x)
-    $ ThickCircle 3 6
+    $ ThickCircle (fromIntegral radius) (fromIntegral radius*2)
 
 
 moveP :: Particle -> Particle
