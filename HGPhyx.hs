@@ -7,6 +7,7 @@ import qualified Data.Map as Map
 import Global
 import World
 import Particle
+import Input
 import qualified PMap
 
 import Debug.Trace
@@ -14,9 +15,9 @@ import Debug.Trace
 field :: Vector.Vector Particle
 field = Vector.fromList
         [Particle {x = (40, 10), v = (0, 0), f = (0, 0),
-                   colorP = makeColor 0.0 0.4 0.8 1.0},
+                   colorP = white},
          Particle {x = (10, 200), v = (0, 0), f = (0, 0),
-                   colorP = makeColor 0.8 0.4 0.0 1.0}]
+                   colorP = white}]
 
 main :: IO ()
 main
@@ -31,10 +32,6 @@ main
 draw :: World -> Picture
 draw (World {object = obj, grid = grid})
     = Pictures [grid, Pictures $ map drawP (Vector.toList obj)]
-
-handleInput :: Event -> World -> World
-handleInput (EventKey k ks _ _) s = s
-handleInput (EventMotion _) s = s
 
 move :: Float -> World -> World
 move _ w = w {object = process (object w)}

@@ -3,6 +3,7 @@ module World where
 import Graphics.Gloss.Interface.Pure.Game
 import qualified Data.Vector as Vector
 import qualified Data.Map as Map
+import System.Random as Random
 
 import Global
 import Particle as P
@@ -47,5 +48,8 @@ initWorld p = World {
                                ((fromIntegral n)*space*(fromIntegral y), fromIntegral winX)]
                               : yLines (n-1) y
 
+
+addObject :: Point -> Vector.Vector Particle -> Vector.Vector Particle
+addObject pos = Vector.cons Particle { x = mapPair floor pos, v = (0, 0), f = (0, 0), colorP = white }
 
 

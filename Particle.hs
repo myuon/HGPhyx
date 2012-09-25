@@ -20,7 +20,7 @@ drawP :: Particle -> Picture
 drawP (Particle {x = x, colorP = colorP})
     = Color colorP
     $ uncurry Translate (mapPair fromIntegral x)
-    $ ThickCircle (fromIntegral radius) (fromIntegral radius*2)
+    $ circleSolid (fromIntegral radius)
 
 
 moveP :: Particle -> Particle
