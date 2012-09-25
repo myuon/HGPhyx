@@ -8,9 +8,9 @@ type Position = (Int, Int)
 winX = 400 :: Int
 winY = 300 :: Int
 
-densXY = 8 :: Int
+densXY = 16 :: Int
 
-radius = 6 :: Int
+radius = 12 :: Int
 
 mapPair :: (a -> b) -> (a, a) -> (b, b)
 mapPair f = f Arrow.*** f

@@ -12,19 +12,12 @@ import qualified PMap
 
 import Debug.Trace
 
-field :: Vector.Vector Particle
-field = Vector.fromList
-        [Particle {x = (40, 10), v = (0, 0), f = (0, 0),
-                   colorP = white},
-         Particle {x = (10, 200), v = (0, 0), f = (0, 0),
-                   colorP = white}]
-
 main :: IO ()
 main
   = play (InWindow "HGPhyx" (winX*2, winY*2) (40, 140))
     black
     60
-    (initWorld field)
+    initWorld
     draw
     handleInput
     move

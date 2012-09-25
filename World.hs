@@ -14,10 +14,10 @@ data World = World {
     grid :: Picture
 }
 
-initWorld :: Particles -> World
-initWorld p = World {
+initWorld :: World
+initWorld = World {
     object
-        = p,
+        = Vector.empty,
     grid
         = Pictures [ Color white
                    $ Pictures gridCenter,
