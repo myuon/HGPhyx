@@ -6,6 +6,7 @@ import qualified Data.Vector as Vector
 
 import Global
 
+import Debug.Trace
 
 data Particle = Particle {
     x :: Position,
@@ -25,31 +26,33 @@ drawP (Particle {x = x, colorP = colorP})
 
 moveP :: Particle -> Particle
 moveP p = p {x = mapPair floor
-               $ limitXY
                $ v p `plusV` mapPair fromIntegral (x p)
-           , v = f p `plusV` v p}
+           , v = mapPair (*0.99) $ f p `plusV` v p
+           , f = f p}
 
 gravityP :: Particle -> Particle
-gravityP p = p {f = (0, negate 0.1)}
+gravityP p = p {f = (0, negate constG)}
 
-
-limitXY :: Point -> Point
-limitXY = limitX . limitY
+wallP :: Particle -> Particle
+wallP = bounceX . bounceY
     where
-        limitX :: Point -> Point
-        limitX v
-            | fst v > fromIntegral winX
-                = (fromIntegral winX, snd v)
-            | fst v < fromIntegral (negate winX)
-                = (fromIntegral $ negate winX, snd v)
+        bounceX :: Particle -> Particle
+        bounceX p
+            | fst (x p) + radius >= winX
+                = p {x = (winX - radius, snd (x p)),
+                     v = (floor' 0.005 $ negate $ fst (v p), snd (v p)) }
+            | fst (x p) - radius <= negate winX
+                = p {x = (negate winX + radius, snd (x p)),
+                     v = (floor' 0.005 $ negate $ fst (v p), snd (v p)) }
             | otherwise
-                = v
-        limitY :: Point -> Point
-        limitY v
-            | snd v > fromIntegral winY
-                = (fst v, fromIntegral winY)
-            | snd v < fromIntegral (negate winY)
-                = (fst v, fromIntegral $ negate winY)
+                = p
+        bounceY :: Particle -> Particle
+        bounceY p
+            | snd (x p) - radius <= negate winY
+                = p {x = (fst (x p), negate winY + radius),
+                     v = (fst (v p), floor' 0.005 $ negate $ snd (v p)),
+                     f = (0, constG) `plusV` (f p) }
             | otherwise
-                = v
+                = p
+
 

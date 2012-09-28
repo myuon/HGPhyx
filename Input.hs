@@ -15,7 +15,7 @@ handleInput (EventKey k ks _ pos) w
   | MouseButton LeftButton <- k, Down <- ks
       = w{ object = addObject pos (object w) }
   | otherwise = w
-handleInput (EventMotion _) s = s
+handleInput (EventMotion a) s = s
 
 
 

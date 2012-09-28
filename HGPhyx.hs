@@ -24,16 +24,18 @@ main
 
 draw :: World -> Picture
 draw (World {object = obj, grid = grid})
-    = Pictures [grid, Pictures $ map drawP (Vector.toList obj)]
+    = Pictures [grid, Pictures $ map drawP (Vector.toList obj), color (makeColor 1.0 1.0 1.0 1.0) $ Text (show $ Vector.length $ obj)]
 
 move :: Float -> World -> World
 move _ w = w {object = process (object w)}
     where
         process :: Particles -> Particles
-        process ps = Vector.map (processOne ps) ps
+        process ps = Vector.map ((processOne ps) . (\p -> p {f = (0, 0)})) ps
         
         processOne :: Particles -> Particle -> Particle
-        processOne ps p = PMap.update ps p . moveP . gravityP $ p
+        processOne ps p =
+--            trace ("x:" ++ show (x p) ++ "\tv:" ++ show (v p) ++ "\ta:" ++ show (f p)) $
+            PMap.update ps p . moveP . wallP . gravityP $ p
 
 
 
