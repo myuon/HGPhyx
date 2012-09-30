@@ -35,25 +35,20 @@ update ps p p' = case isUpdate (x p') pmap' of
 
         isUpdate :: Position -> PMap -> Maybe Position
         isUpdate k p = checkXY (1, 0)
-                   >>: checkXY (1, 1)
-                   >>: checkXY (0, 1)
-                   >>: checkXY (negate 1, 1)
-                   >>: checkXY (negate 1, 0)
-                   >>: checkXY (negate 1, negate 1)
-                   >>: checkXY (0, negate 1)
-                   >>: checkXY (1, negate 1)
-                   >>: checkXY (0, 0)
+                   <|> checkXY (1, 1)
+                   <|> checkXY (0, 1)
+                   <|> checkXY (negate 1, 1)
+                   <|> checkXY (negate 1, 0)
+                   <|> checkXY (negate 1, negate 1)
+                   <|> checkXY (0, negate 1)
+                   <|> checkXY (1, negate 1)
+                   <|> checkXY (0, 0)
             where
                 checkXY :: Position -> Maybe Position
-                checkXY = lookXY p k
-
-                (>>:) :: Maybe a -> Maybe a -> Maybe a
-                _ >>: Just a  = Just a
-                Just a >>: Nothing = Just a
-                _ >>: _ = Nothing                
+                checkXY = lookXY p k            
 
 lookXY :: PMap -> Position -> Position -> Maybe Position
-lookXY pmap k x = Map.lookup ((toGrid k) `plusP` x) pmap
+lookXY pmap k x = Map.lookup (toGrid k `plusP` x) pmap
 
 -- collision
 -- (rx, ry)を中心として(vx, vy)方向に速度ベクトルを持つ円が
